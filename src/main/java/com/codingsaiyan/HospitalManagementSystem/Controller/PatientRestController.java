@@ -11,13 +11,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.codingsaiyan.HospitalManagementSystem.DAO.AddressJpaDAO;
 import com.codingsaiyan.HospitalManagementSystem.DAO.PatientJpaDAO;
-import com.codingsaiyan.HospitalManagementSystem.DAO.VisitJpaDAO;
 import com.codingsaiyan.HospitalManagementSystem.Entity.Patient;
-import com.codingsaiyan.HospitalManagementSystem.Entity.Visit;
 
 @RestController
 public class PatientRestController {
@@ -25,11 +23,6 @@ public class PatientRestController {
 	@Autowired
 	private PatientJpaDAO patientJpaDAO;
 	
-	@Autowired
-	private AddressJpaDAO addressJpaDAO;
-	
-	@Autowired
-	private VisitJpaDAO visitJpaDAO;
 	
 	@GetMapping("/patients")
 	public List<Patient> getAllPatients(){
@@ -43,6 +36,15 @@ public class PatientRestController {
 			throw new RuntimeException("Patient not found..");
 		}
 		return opPatient.get();
+	}
+	
+	@GetMapping("/patients")
+	public List<Patient> findPatientByName(@RequestParam(name = "patientName", required=false) String name) {
+		List<Patient> pList = patientJpaDAO.findByFirstNameContaining(name);
+		if(pList == null) {
+			throw new RuntimeException("Patient not found..");
+		}
+		return pList;
 	}
 	
 	@PostMapping("/patients")
@@ -64,12 +66,5 @@ public class PatientRestController {
 		return pt;
 	}
 	
-	@PostMapping("/visits/patients/{id}")
-	public ResponseEntity<Visit> createVisit(@RequestBody Visit visit, @PathVariable int id) {
-		
-		visit.setVisitId(0);
-		visit.setPatientId(id);
-		Visit vs = visitJpaDAO.save(visit);
-		return new ResponseEntity<>(vs, HttpStatus.CREATED);
-	}
+	
 }
