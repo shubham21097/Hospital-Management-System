@@ -58,8 +58,10 @@ public class AddressRestController {
 			throw new RuntimeException("Patient not found..");
 		}
 		address.setAddressId(0);
+		address.setPatient(opPatient.get());
 		Address adr = addressJpaDAO.save(address);
-		adr.setPatient(opPatient.get());
+		opPatient.get().setAddress(adr);
+		patientJpaDAO.save(opPatient.get());
 		return new ResponseEntity<>(adr, HttpStatus.CREATED);
 	}
 	

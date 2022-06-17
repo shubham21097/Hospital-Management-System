@@ -38,7 +38,7 @@ public class PatientRestController {
 		return opPatient.get();
 	}
 	
-	@GetMapping("/patients")
+	@GetMapping(path = "/patients", params = {"patientName"})
 	public List<Patient> findPatientByName(@RequestParam(name = "patientName", required=false) String name) {
 		List<Patient> pList = patientJpaDAO.findByFirstNameContaining(name);
 		if(pList == null) {

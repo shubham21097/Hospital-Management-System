@@ -15,6 +15,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name="patient")
 public class Patient {
@@ -28,12 +30,12 @@ public class Patient {
 	private String gender;
 	
 	@OneToOne(cascade=CascadeType.ALL) 
-	@JoinColumn(name = "address")
+	@JoinColumn(name = "addressId")
 	private Address patientAddress;
 	
-	@OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
-	@JoinColumn(name = "visitId")
-	//@JsonIgnore
+	@OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.ALL, mappedBy = "patient")
+	//@JoinColumn(name = "visitId")
+	@JsonIgnore
 	private List<Visit> visits;
 	
 	public Patient(String firstName, String lastName, String gender, Address address, List<Visit> visits) {
@@ -87,8 +89,8 @@ public class Patient {
 	public void addVisit(Visit v) {
 		if(visits == null) {
 			visits = new ArrayList<>();
-			visits.add(v);
 		}
+		visits.add(v);
 	}
 	
 }

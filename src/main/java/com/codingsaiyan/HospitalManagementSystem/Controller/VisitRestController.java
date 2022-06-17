@@ -52,9 +52,12 @@ public class VisitRestController {
 		
 	@PostMapping("/visits/patients/{id}")
 	public ResponseEntity<Visit> createVisit(@RequestBody Visit visit, @PathVariable int id) {
-		
+		Optional<Patient> patient = patientJpaDAO.findById(id);
+		if(!patient.isPresent()) {
+			throw new RuntimeException("Patient not found..");
+		}
 		visit.setVisitId(0);
-		visit.setPatientId(id);
+		visit.setPatient(patient.get());
 		Visit vs = visitJpaDAO.save(visit);
 		return new ResponseEntity<>(vs, HttpStatus.CREATED);
 	}

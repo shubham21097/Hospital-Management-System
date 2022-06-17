@@ -1,9 +1,12 @@
 package com.codingsaiyan.HospitalManagementSystem.Entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -14,7 +17,7 @@ public class Visit {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int visitId;
 	private String dateTime;
-	private int patientId;
+	//private int patientId;
 	private String staffId;
 	private String symptoms;
 	private String diagnosis;
@@ -22,22 +25,31 @@ public class Visit {
 	private String prescription;
 	private int invoiceId;
 	
+	@ManyToOne(cascade = {CascadeType.MERGE,
+			CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH})
+	@JoinColumn(name = "patientId")
+	private Patient patient;
+	
 	public Visit() {
 		
 	}
 	
-	public Visit(String dateTime, int patientId, String staffId, String symptoms, String diagnosis, int roomId,
-			String prescription, int invoiceId) {
+	
+
+	public Visit(String dateTime, String staffId, String symptoms, String diagnosis, int roomId, String prescription,
+			int invoiceId, Patient patient) {
 		super();
 		this.dateTime = dateTime;
-		this.patientId = patientId;
 		this.staffId = staffId;
 		this.symptoms = symptoms;
 		this.diagnosis = diagnosis;
 		this.roomId = roomId;
 		this.prescription = prescription;
 		this.invoiceId = invoiceId;
+		this.patient = patient;
 	}
+
+
 
 	public int getVisitId() {
 		return visitId;
@@ -103,13 +115,14 @@ public class Visit {
 		this.invoiceId = invoiceId;
 	}
 
-	public int getPatientId() {
-		return patientId;
+	public Patient getPatient() {
+		return patient;
 	}
 
-	public void setPatientId(int patientId) {
-		this.patientId = patientId;
+	public void setPatient(Patient patient) {
+		this.patient = patient;
 	}
 
+	
 	
 }
